@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Regra de Três</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fonte Inter */
+        body {
+            font-family: "Inter", sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+            Calculadora de Regra de Três
+        </h1>
+        
+        <p class="text-center text-gray-600 mb-8">
+            Insira os totais e o consumo do inquilino para calcular o valor a ser cobrado.
+        </p>
+
+        <!-- Container para a visualização da regra de três -->
+        <div class="grid grid-cols-3 gap-4 items-center mb-6">
+            <!-- Coluna 1 (A e C) -->
+            <div class="space-y-4">
+                <label for="valueA" class="block text-sm font-medium text-gray-700">Total em m³</label>
+                <input type="number" id="valueA" placeholder="Ex: 100" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                
+                <label for="valueC" class="block text-sm font-medium text-gray-700">m³ de água do inquilino</label>
+                <input type="number" id="valueC" placeholder="Ex: 50" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <!-- Coluna 2 (Textos "está para") -->
+            <div class="space-y-4 text-center">
+                <div class="h-16 flex items-center justify-center">
+                    <span class="text-gray-500">está para</span>
+                </div>
+                <div class="h-16 flex items-center justify-center">
+                    <span class="text-gray-500">está para</span>
+                </div>
+            </div>
+
+            <!-- Coluna 3 (B e X) -->
+            <div class="space-y-4">
+                <label for="valueB" class="block text-sm font-medium text-gray-700">Total conta de água</label>
+                <input type="number" id="valueB" placeholder="Ex: 150.50" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                
+                <label class="block text-sm font-medium text-gray-700">Valor a cobrar do inquilino</label>
+                <div id="resultX" class="w-full p-3 h-16 bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold text-gray-800">
+                    ---
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagem de Erro -->
+        <div id="errorMessage" class="text-red-600 text-center mb-4 hidden"></div>
+
+        <!-- Botões de Ação -->
+        <div class="flex gap-4">
+            <button id="calculateButton" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                Calcular
+            </button>
+            <button id="clearButton" class="w-full bg-gray-300 text-gray-800 p-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                Limpar
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const valueA = document.getElementById('valueA');
+        const valueB = document.getElementById('valueB');
+        const valueC = document.getElementById('valueC');
+        const resultX = document.getElementById('resultX');
+        const calculateButton = document.getElementById('calculateButton');
+        const clearButton = document.getElementById('clearButton');
+        const errorMessage = document.getElementById('errorMessage');
+
+        function calcular() {
+            // Esconde mensagens de erro anteriores
+            errorMessage.classList.add('hidden');
+            errorMessage.textContent = '';
+            
+            const a = parseFloat(valueA.value);
+            const b = parseFloat(valueB.value);
+            const c = parseFloat(valueC.value);
+
+            // Validação
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                mostrarErro("Por favor, preencha todos os campos (Total em m³, Total conta de água e m³ de água do inquilino) com números.");
+                resultX.textContent = '---';
+                return;
+            }
+
+            if (a === 0) {
+                mostrarErro("O 'Total em m³' não pode ser zero.");
+                resultX.textContent = '---';
+                return;
+            }
+
+            // Cálculo da Regra de Três: X = (C * B) / A
+            const x = (c * b) / a;
+
+            // Exibe o resultado formatado
+            // Tenta limitar a 4 casas decimais se for um número quebrado
+            if (x % 1 !== 0) {
+                resultX.textContent = x.toFixed(4);
+            } else {
+                resultX.textContent = x;
+            }
+        }
+
+        function limpar() {
+            valueA.value = '';
+            valueB.value = '';
+            valueC.value = '';
+            resultX.textContent = '---';
+            errorMessage.classList.add('hidden');
+            errorMessage.textContent = '';
+        }
+
+        function mostrarErro(mensagem) {
+            errorMessage.textContent = mensagem;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Adiciona os eventos aos botões
+        calculateButton.addEventListener('click', calcular);
+        clearButton.addEventListener('click', limpar);
+
+    </script>
+</body>
+</html>
+
